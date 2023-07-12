@@ -1,0 +1,1 @@
+#define IMPORT_AS_STRING "%99s"
