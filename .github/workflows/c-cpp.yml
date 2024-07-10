@@ -1,0 +1,30 @@
+name: SonarQube AutoConfig
+
+on:
+  # Trigger analysis when pushing in master or pull requests, and when creating
+  # a pull request.
+  push:
+    branches:
+      - master
+  pull_request:
+      types: [opened, synchronize, reopened]
+
+jobs:
+  sonarqube:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        # Disabling shallow clone is recommended for improving relevancy of reporting
+        fetch-depth: 0
+    - name:  Install sonar-scanner and build-wrapper
+      uses: sonarsource/sonarqube-github-c-cpp@v1
+      env:
+        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        SONAR_ROOT_CERT: ${{ secrets.SONAR_ROOT_CERT }}
+    - name: Run sonar-scanner
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      run:
+        sonar-scanner -Dsonar.projectKey=sylvain-combe-sonarsource_C-CPPTest
